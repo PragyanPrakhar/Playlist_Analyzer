@@ -8,10 +8,22 @@ import { Music, Loader2, Sparkles, BarChart2 } from "lucide-react";
 // import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 const Home = () => {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
-    const handleAnalyze = () => {
+    const [inputText, setInputText] = useState("");
+    const handleAnalyze = async () => {
         setIsAnalyzing(true);
         // Simulating analysis process
-        setTimeout(() => setIsAnalyzing(false), 2000);
+        const fetchedData = await fetch("/api/get-data", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                inputText,
+            }),
+        });
+        const data = await fetchedData.json();
+        setIsAnalyzing(false);
+        console.log(data);
     };
 
     return (
@@ -35,6 +47,8 @@ const Home = () => {
                         <Music className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 transition-colors duration-300 group-hover:text-blue-500" />
                         <Input
                             type="text"
+                            value={inputText}
+                            onChange={(e) => setInputText(e.target.value)}
                             placeholder="Enter your playlist URL"
                             className="pl-10 pr-4 py-3 w-full border-2 border-gray-200 focus:border-blue-500 rounded-lg transition duration-300 text-lg placeholder-gray-400 focus:ring-2 focus:ring-blue-200 focus:outline-none"
                         />
